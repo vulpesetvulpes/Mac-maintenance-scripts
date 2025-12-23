@@ -48,5 +48,5 @@ else
   message="No files to delete"
 fi
 
-osascript -e "display notification \"$message\" with title \"Downloads Cleaner\""
+terminal-notifier -message "$message" -title "Downloads Cleaner"
 echo "$message"
