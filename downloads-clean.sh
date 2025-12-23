@@ -4,8 +4,8 @@ DOWNLOADS="$HOME/Downloads"
 NOW=$(date +%s)
 MONTH_AGO=$((NOW - 30*24*3600))
 TWO_WEEKS_AGO=$((NOW - 14*24*3600))
+deleted_count=0
 
-find "$DOWNLOADS" -mindepth 1 -maxdepth 1 -print0 |
 while IFS= read -r -d '' item; do
   # Timestamps
   mod_epoch=$(stat -f %m "$item" 2>/dev/null || echo 0)
@@ -33,5 +33,17 @@ while IFS= read -r -d '' item; do
     else
       osascript -e "tell application \"Finder\" to move (POSIX file \"$item\") to trash"
     fi
+    deleted_count=$((deleted_count + 1))
   fi
-done
+done < <(find "$DOWNLOADS" -mindepth 1 -maxdepth 1 -print0)
+
+if [ "$deleted_count" -gt 0 ]; then
+  if [ "$deleted_count" -eq 1 ]; then
+    file_label="file"
+  else
+    file_label="files"
+  fi
+  osascript -e "display notification \"Deleted $deleted_count $file_label\" with title \"Downloads Cleaner\""
+else
+  osascript -e "display notification \"No files to delete\" with title \"Downloads Cleaner\""
+fi
