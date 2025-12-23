@@ -43,7 +43,10 @@ if [ "$deleted_count" -gt 0 ]; then
   else
     file_label="files"
   fi
-  osascript -e "display notification \"Deleted $deleted_count $file_label\" with title \"Downloads Cleaner\""
+  message="Deleted $deleted_count $file_label"
 else
-  osascript -e "display notification \"No files to delete\" with title \"Downloads Cleaner\""
+  message="No files to delete"
 fi
+
+osascript -e "display notification \"$message\" with title \"Downloads Cleaner\""
+echo "$message"
